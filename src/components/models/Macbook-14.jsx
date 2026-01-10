@@ -1,10 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useGLTF, useTexture } from '@react-three/drei'
+import useMacbookStore from '../../store/';
+import { noChangeParts } from '../../constants';
+import * as THREE from 'three';
 
 export default function MacbookModel14(props) {
-  const { nodes, materials } = useGLTF("/models/macbook-14-transformed.glb");
+  const {color} = useMacbookStore();
+  const { nodes, materials,scene } = useGLTF("/models/macbook-14-transformed.glb");
   
   const texture = useTexture('/screen.png');
+
+  useEffect(() => {
+    scene.traverse((child) => {
+      if (child.isMesh) {
+        // Change color only if the part name is not noChangeParts
+        if (!noChangeParts.includes(child.name)) {
+          child.material.color = new THREE.Color(color);
+        }
+      }
+    })
+  },[color,scene])
   
   return (
     <group {...props} dispose={null}>
