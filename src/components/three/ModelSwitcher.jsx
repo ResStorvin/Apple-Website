@@ -4,22 +4,27 @@ import gsap from "gsap";
 
 import MacbookModel16 from "../models/Macbook-16";
 import MacbookModel14 from "../models/Macbook-14";
+import { useGSAP } from "@gsap/react";
+
 const ANIMATION_DURATION = 1;
-const OFFSET_DISTANCE = 5; //
+const OFFSET_DISTANCE = 5;
 
-
-const fadeMeshes = (group, opactiy) => {
+const fadeMeshes = (group, opacity) => {
   if (!group) return;
   
   group.traverse((child) => {
     if (child.isMesh) {
       child.material.transparent = true;
-      gsap.to(child.material, {
-        opacity: opactiy,
-        duration: ANIMATION_DURATION,
-      })
+      gsap.to(child.material,{opacity, duration: ANIMATION_DURATION})
     }
-  })
+  })}
+
+const moveGroup = (group, x) => {
+  if (!group) return;
+  
+  gsap.to(group.position, {
+    x, duration: ANIMATION_DURATION
+  });
 }
 
 
@@ -27,13 +32,28 @@ const ModelSwitcher = ({ scale, isMobile }) => {
   const smallMacbookRef = useRef();
   const largeMacbookRef = useRef();
 
-  const showLargerMacbook = scale === 0.08 || scale === 0.05;
+  const showLargeMacbook = scale === 0.08 || scale === 0.05;
+
+  useGSAP(() => {
+    if (showLargeMacbook) {
+          moveGroup(smallMacbookRef.current, -OFFSET_DISTANCE);
+          moveGroup(largeMacbookRef.current, 0);
+
+          fadeMeshes(smallMacbookRef.current, 0);
+          fadeMeshes(largeMacbookRef.current, 1);
+    } else {
+          moveGroup(smallMacbookRef.current, 0);
+          moveGroup(largeMacbookRef.current, OFFSET_DISTANCE);
+
+          fadeMeshes(smallMacbookRef.current, 1);
+          fadeMeshes(largeMacbookRef.current, 0);
+    }
+  },[scale])
 
   const controlsConfig = {
     snap: true,
     speed: 1,
     zoom: false,
-    // polar: [-Math.PI, Math.PI], 
     azimuth: [-Infinity, Infinity],
     config: { mass: 1, tension: 0, friction: 26 }
   }
@@ -46,12 +66,23 @@ const ModelSwitcher = ({ scale, isMobile }) => {
         </group>
       </PresentationControls>
 
-      {/* <PresentationControls {...controlsConfig}>
+      <PresentationControls {...controlsConfig}>
         <group ref={smallMacbookRef}>
           <MacbookModel14 scale={isMobile ? 0.03 : 0.06} />
         </group>
-      </PresentationControls> */}
+      </PresentationControls>
     </>
   );
 }
 export default ModelSwitcher;
+
+
+// child (Mesh)
+// │
+// ├─ position / rotation / scale    ← properties of the mesh itself
+// ├─ geometry                       ← shape of the mesh (box, sphere, etc.)
+// └─ material                       ← the “skin” or “paint” of the mesh
+//     │
+//     ├─ color                       ← color of the material
+//     ├─ transparent                 ← must be true to allow opacity changes
+//     └─ opacity                     ← how see-through it is (0 = invisible, 1 = solid)
