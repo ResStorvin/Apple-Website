@@ -1,29 +1,32 @@
 import { useMediaQuery } from "react-responsive";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Showcase = () => {
-  const isTablet = useMediaQuery({ query: "(max-width: 1024px)" });
+  const isTablet = useMediaQuery({ query: '(max-width: 1024px)' });
 
-  useGSAP(() => {
-    if (!isTablet) {
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: "#showcase",
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-          pin: true,
-        },
-      });
+   useGSAP(() => {
+     if (!isTablet) {
+       const timeline = gsap.timeline({
+         scrollTrigger: {
+           trigger: "#showcase",
+           start: "top top",
+           end: "bottom top",
+           scrub: true,
+           pin: true,
+         },
+       });
 
-      timeline
-        .to(".mask img", {
-          transform: "scale(1.1)",
-        })
-        .to(".content", { opacity: 1, y: 0, ease: "power1.in" });
-    }
-  }, [isTablet]);
+       timeline
+         .to(".mask img", {
+           transform: "scale(1.1)",
+         })
+         .to(".content", { opacity: 1, y: 0, ease: "power1.in" });
+     }
+   }, [isTablet]);
 
   return (
     <section id="showcase">
@@ -34,7 +37,7 @@ const Showcase = () => {
         </div>
       </div>
 
-      <div className="content">
+        <div className="content">
         <div className="wrapper">
           <div className="lg:max-w-md">
             <h2>Rocket Chip</h2>
@@ -77,8 +80,9 @@ const Showcase = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </section>
   );
 };
+
 export default Showcase;
