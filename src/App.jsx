@@ -19,8 +19,8 @@ const App = () => {
       <ProductViewer />
       <ShowCase />
       <Performance />
-      <Highlights />
       <Features />
+      <Highlights />
       <Footer /> 
     </main>
   );
