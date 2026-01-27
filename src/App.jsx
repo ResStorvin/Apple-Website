@@ -15,11 +15,11 @@ const App = () => {
   return (
     <main>
       <NavBar />
-      {/* <Hero />
+      <Hero />
       <ProductViewer />
       <ShowCase />
       <Performance />
-      <Features />  */}
+      <Features /> 
       <Highlights />
       <Footer /> 
     </main>
