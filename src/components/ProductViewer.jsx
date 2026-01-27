@@ -53,7 +53,6 @@ const ProductViewer = () => {
 
       <Canvas id="canvas" camera={{ position: [0, 2, 5], fov: 50, near: 0.1, far: 100 }}>
         <StudioLight />
-        
         <ModelSwitcher scale={isMobile ? scale - 0.03 : scale} isMobile={isMobile} />
       </Canvas>
     </section>
